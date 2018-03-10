@@ -1,0 +1,106 @@
+FORMAT: 1A
+HOST: http://polls.apiblueprint.org/
+
+# tf_serving
+
+Polls is a simple API allowing consumers to view polls and vote in them.
+
+## Model Actions [/classifiers]
+
+### List All Models [GET]
+
++ Response 200 (application/json)
+
+        {
+            "classifiers" : [ {
+                "classifier_id" : "10D41B-nlc-1",
+                "url" : "https://tf-test/natural-language-processing/api/classifiers/10D41B-nlc-1",
+                "name" : "My Classifier",
+                "language" : "en",
+                "created" : "2015-05-28T18:01:57.393Z"
+            } ]
+        }
+
+### Create a New Model [POST]
+
+You may create your own model using this action. It takes a JSON
+object containing a question and a collection of answers in the
+form of choices.
+
++ Request
+
+    + Headers
+        
+            Accept: multipart/form-data
+    
+    
+    + Body
+    
+            {
+                training_data: @data.csv,
+                trainig_metadata:{
+                    language: "en",
+                    name: "My Classifier"
+                }
+            }
+
++ Response 201 (application/json)
+
+        {
+            "classifier_id" : "10D41B-nlc-1",
+            "name" : "My Classifier",
+            "language" : "en",
+            "created" : "2015-05-28T18:01:57.393Z",
+            "url" : "https://tf-test/natural-language-processing/api/classifiers/10D41B-nlc-1",
+            "status" : "Training",
+            "status_description" : "The classifier instance is in its training phase, not yet ready to accept classify requests"
+        }
+
+## Each Model Action [/classifiers/{model}]
+
+### Get information about a Model [GET]
+
++ Response 200 (application/json)
+
+        {
+            "classifier_id" : "10D41B-nlc-1",
+            "name" : "My Classifier",
+            "language" : "en",
+            "created" : "2015-05-28T18:01:57.393Z",
+            "url" : "https://gateway.watsonplatform.net/natural-language-classifier/api/v1/classifiers/10D41B-nlc-1",
+            "status" : "Training",
+            "status_description" : "The classifier instance is in its training phase, not yet ready to accept classify requests"
+        }
+
+### Delete a Model [DELETE]
+
++ Response 201 (application/json)
+
+        {
+        }
+        
+## Classify [/classifiers/{model}/classfy]
+
+### Classify [POST]
+
++ Request
+
+    + Body
+      
+            text
+
++ Response 201 (application/json)
+    
+        {
+            "classifier_id" : "10D41B-nlc-1",
+            "url" : "https://gateway.watsonplatform.net/natural-language-classifier/api/v1/classifiers/10D41B-nlc-1/classify?text=How%20hot%20wil/10D41B-nlc-1",
+            "text" : "How hot will it be today?",
+            "top_class" : "temperature",
+            "classes" : [ {
+                "class_name" : "temperature",
+                "confidence" : 0.9998201258549781
+            }, {
+                "class_name" : "conditions",
+                "confidence" : 1.7987414502176904E-4
+            } ]
+        }
